@@ -1,34 +1,134 @@
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Page Title</title>
-        <!-- Link to external CSS files -->
-        <link rel="stylesheet" href="styles.css">
-    </head>
-    <body>
-        <header>
-            <!-- Navigation, logo, etc. -->
-        </header>
-        <main>
-            <!-- Main content of the page -->
-            <section>
-                <h1>Welcome</h1>
-                <p>This is a paragraph of text.</p>
-            </section>
-            <section>
-                <h2>Another Section</h2>
-                <ul>
-                    <li>Item 1</li>
-                    <li>Item 2</li>
-                </ul>
-            </section>
-        </main>
-        <footer>
-            <!-- Copyright, contact info, etc. -->
-        </footer>
-        <!-- Link to external JavaScript files -->
-        <script src="script.js"></script>
-    </body>
-    </html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Big Game: Click the Moving Box</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: #222;
+      color: #fff;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+    #gameArea {
+      position: relative;
+      width: 100vw;
+      height: 80vh;
+      background: #444;
+      margin: 20px auto;
+      overflow: hidden;
+    }
+    #box {
+      width: 80px;
+      height: 80px;
+      background: #f39c12;
+      position: absolute;
+      cursor: pointer;
+      border-radius: 10px;
+      transition: background-color 0.3s;
+    }
+    #box:hover {
+      background-color: #e67e22;
+    }
+    #scoreBoard {
+      font-size: 24px;
+      margin-top: 10px;
+    }
+    #timer {
+      font-size: 20px;
+      margin-top: 5px;
+    }
+    #startButton {
+      padding: 10px 20px;
+      font-size: 18px;
+      cursor: pointer;
+      background-color: #27ae60;
+      border: none;
+      color: white;
+      border-radius: 5px;
+      margin-top: 10px;
+    }
+    #startButton:disabled {
+      background-color: #95a5a6;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+  <h1>Big Game: Click the Moving Box!</h1>
+  <div id="gameArea">
+    <div id="box"></div>
+  </div>
+  <div id="scoreBoard">Score: 0</div>
+  <div id="timer">Time: 30</div>
+  <button id="startButton">Start Game</button>
+
+  <script>
+    const box = document.getElementById('box');
+    const gameArea = document.getElementById('gameArea');
+    const scoreBoard = document.getElementById('scoreBoard');
+    const timerDisplay = document.getElementById('timer');
+    const startButton = document.getElementById('startButton');
+
+    let score = 0;
+    let timeLeft = 30;
+    let gameInterval;
+    let timerInterval;
+
+    function randomPosition() {
+      const maxX = gameArea.clientWidth - box.clientWidth;
+      const maxY = gameArea.clientHeight - box.clientHeight;
+
+      const x = Math.floor(Math.random() * maxX);
+      const y = Math.floor(Math.random() * maxY);
+
+      box.style.left = x + 'px';
+      box.style.top = y + 'px';
+    }
+
+    function startGame() {
+      score = 0;
+      timeLeft = 30;
+      scoreBoard.textContent = 'Score: ' + score;
+      timerDisplay.textContent = 'Time: ' + timeLeft;
+      startButton.disabled = true;
+      box.style.display = 'block';
+
+      randomPosition();
+
+      // Move the box every 800ms
+      gameInterval = setInterval(randomPosition, 800);
+
+      // Countdown timer every second
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        timerDisplay.textContent = 'Time: ' + timeLeft;
+        if (timeLeft <= 0) {
+          endGame();
+        }
+      }, 1000);
+    }
+
+    function endGame() {
+      clearInterval(gameInterval);
+      clearInterval(timerInterval);
+      box.style.display = 'none';
+      startButton.disabled = false;
+      alert('Game Over! Your final score is: ' + score);
+    }
+
+    box.addEventListener('click', () => {
+      score++;
+      scoreBoard.textContent = 'Score: ' + score;
+      randomPosition();
+    });
+
+    startButton.addEventListener('click', startGame);
+  </script>
+</body>
+</html>
+
